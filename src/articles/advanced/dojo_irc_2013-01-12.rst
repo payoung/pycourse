@@ -1,0 +1,52 @@
+Advanced Class Dojo Notes 2013-01-12
+####################################
+
+:date: 2013-01-12 14:00
+:slug: dojo-notes
+:summary: Notes from Advanced Class Dojo on 2013-01-12
+
+Internet Relay Chat
+-------------------
+
+Internet Relay Chat is how many open source communities. We setup an IRC client and helped everyone register a unique nickname. 
+
+Mac uses can use Colloquy_ or Adium_
+
+Linux users can use xChat_
+
+Windows User can use xChat_ or mIRC_
+
+We all logged into freenode and joined the channel #pyclass We will be using this channel in future classes. Everyone will need to register their nick
+
+To register your nick type the following
+
+.. code-block:: console
+
+	/msg NickServ register password email@address.com
+
+Liz gave us general tips to be a good IRC citizen
+
+Stack Overflow
+--------------
+
+Liz introduced the website stackoverflow_ This is a great place to go and find answers to questions and also answer questions. All of us who are in the Advanced Python Class do have the skills to answer some of the questions on stackoverflow_.
+
+You can contribute to open source not only by writing code but by answering questions. This is really a great way to be a part of a community. 
+
+Mailing Lists
+-------------
+
+All open source projects use mailing lists. You can join the mailing list for the projects you want to contribute to. 
+
+User Groups
+-----------
+
+.. _python: http://www.python.org
+.. _colloquy: http://colloquy.info/
+.. _Adium: http://adium.im/
+.. _xChat: http://xchat.org/
+.. _mIRC: http://www.mirc.com/
+.. _freenode: http://freenode.net/
+.. _stackoverflow: http://stackoverflow.com/
+
+
