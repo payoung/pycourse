@@ -58,6 +58,7 @@ Schedule
 +-------------+--------------------------------------------------------------+ 
 
 .. _python: http://www.python.org
+.. _PEP8: http://www.python.org/dev/peps/pep-0008/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _PostgreSQL: http://www.postgresql.org/
 .. _Psycopg: http://initd.org/psycopg/
