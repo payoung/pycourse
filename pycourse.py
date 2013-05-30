@@ -5,7 +5,7 @@ RELATIVE_URLS = True
 
 TIMEZONE = 'America/Los_Angeles'
 ARTICLE_DIR = ('articles')
-ARTICLE_EXCLUDES = ('pages')
+ARTICLE_EXCLUDES = (('pages'),)
 ARTICLE_URL = 'posts/{date:%Y}/{date:%b}/{date:%d}/{slug}/'
 ARTICLE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/{date:%d}/{slug}/index.html'
 PAGE_URL = '{slug}/'
@@ -17,7 +17,7 @@ OUTPUT_PATH = 'output/'
 STATIC_PATHS = ['images']
 DISQUS_SITENAME = "pycourse"
 
-FILES_TO_COPY = (('CNAME', 'robots.txt'),) 
+FILES_TO_COPY = (('CNAME', 'CNAME'), ('robots.txt', 'robots.txt'),) 
 
 SOCIAL = (('Liz\'s Site', 'http://www.eleddy.com'),
           ('Liz\'s Twitter', 'http://twitter.com/eleddy'),
