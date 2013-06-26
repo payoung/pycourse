@@ -13,13 +13,13 @@ Noisebridge Learning Python Class is an introduction to the python_ programing l
 Organization
 ------------
 
-The class is taught in a lecture-lab format. The instructor will cover topics in class while the class codes the examples. One student each week will be required to attach their laptop to the overhead projector and work though the code while we discuss it. 
+The class is taught in a lecture-lab format. The instructor will cover topics in class while the class codes the examples. One student each week will be required to attach their laptop to the overhead projector and work though the code while we discuss it.
 
 Course Objectives
 -----------------
 
 #. Obtain a basic understanding of the python_ programing language.
-#. Introduce students to basic programing principals. 
+#. Introduce students to basic programing principals.
 #. Prepare students to get a job as a python_ programmer.
 
 Text and required supplies
@@ -33,16 +33,16 @@ Text and required supplies
 Classroom Rules of Conduct
 --------------------------
 
-Unlike traditional college classes our class is taught without grades or cost. Because of this we expect students participate in class. Both of your instructors volunteer their time and all we ask is for quality participation.  
+Unlike traditional college classes our class is taught without grades or cost. Because of this we expect students participate in class. Both of your instructors volunteer their time and all we ask is for quality participation.
 
 Instructors
 -----------
 
-This class is taught by two instructors. Each of them bring their own strengths and experience to our class. 
+This class is taught by two instructors. Each of them bring their own strengths and experience to our class.
 
-`Elizabeth Leddy`_ is an active member of the python and plone community. She is an expert on website scaling. 
+`Elizabeth Leddy`_ is an active member of the python and plone community. She is an expert on website scaling.
 
-`Kellan Jacobs`_ is a system administrator working in the online movie space. 
+`Kellan Jacobs`_ is a system administrator working in the online movie space.
 
 Schedule
 --------
@@ -83,17 +83,17 @@ Lessons 37-40 Dictionaries and modules. Intro to object oriented programing.
 
 Lessons 41-44: All OOP all the time
 
-**Week 10: July 3, 2013**
+**Week 10: July 10, 2013**
 
 Lessons 45 and 46 Shall we play a game
 
-**Week 11: July 17, 2013**
+**Week 11: July 24, 2013**
 
 Testing and Exception handling. I don't like the lessons that are in the book so we will review this ourselves. **NO CLASS July 10th. I will be out of town**
 
-**Week 12: July 24**
+**Week 12: July 31**
 
-Last week of class this day is for any lessons we are behind on. Just planning for one more day.
+Prep students for advanced class. Setup github account and git tutorial.
 
 .. _python: http://www.python.org
 .. _`Learn Python the Hard way`: http://learnpythonthehardway.org/book/
