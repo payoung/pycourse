@@ -26,7 +26,7 @@ Schedule
 +-------------+----------------------------------------------+--------+
 |July 30, 2013| Testings Unittest and Nosetest               | James  |
 +-------------+----------------------------------------------+--------+
-|Aug 6, 2013  | Advanced Testing django, pyramidm and mock   | James  |
+|Aug 6, 2013  | Advanced Testing django, pyramid and mock    | James  |
 +-------------+----------------------------------------------+--------+
 |Aug 13, 2013 | Database Modeling                            | Paul   |
 +-------------+----------------------------------------------+--------+
