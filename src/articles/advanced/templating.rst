@@ -150,9 +150,9 @@ He then defined a page specific template (file name: index.html) that defined a 
     {% extends "base.html" %}
     {% block content %}
         <h1>Hi, {{user.nickname}}!</h1>
-    {% for post in posts %}
-    <div><p>{{post.author.nickname}} says: <b>{{post.body}}</b></p></div>
-    {% endfor %}
+        {% for post in posts %}
+            <div><p>{{post.author.nickname}} says: <b>{{post.body}}</b></p></div>
+        {% endfor %}
     {% endblock %}
 
 In this process where one template (index.html) inserts itself in another (base.html), index.html is called the child template that "inherits" from the parent base.html. Furthermore, that the block content definition in index.html "overrides" the block in base.html.
