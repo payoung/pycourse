@@ -46,8 +46,6 @@ Note: it is also possible to pass the template as a string:
     template = Template('Hello {{ name }}!')
     template.render(name='John Doe')
 
-But this method will not support template inheritance (see below).
-
 Jinja2 with Flask
 -----------------
 
@@ -117,6 +115,7 @@ then in the template we could refer to the user dictionary as:
 
     <h1>Hello, {{ user.name }}!</h1>
 
+Note that the template used a dot (.) to access the attribute of a variable.
 
 Template Inheritance
 --------------------
@@ -156,7 +155,7 @@ He then defined a page specific template (file name: index.html) that defined a 
     {% endfor %}
     {% endblock %}
 
-In this process where one template (index.html) inserts itself in another (base.html), index.html "inherits" from base.html.
+In this process where one template (index.html) inserts itself in another (base.html), index.html is called the child template that "inherits" from the parent base.html. Furthermore, that the block content definition in index.html "overrides" the block in base.html.
 
 Filters
 -------
