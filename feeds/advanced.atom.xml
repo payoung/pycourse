@@ -1,5 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Noisebridge Learning Python</title><link href="http://www.pycourse.com/" rel="alternate"></link><link href="http://www.pycourse.com/feeds/advanced.atom.xml" rel="self"></link><id>http://www.pycourse.com/</id><updated>2013-07-02T14:00:00-07:00</updated><entry><title>Generators in Python</title><link href="http://www.pycourse.com/posts/2013/Jul/02/generators-in-python/" rel="alternate"></link><updated>2013-07-02T14:00:00-07:00</updated><author><name>Kellan</name></author><id>tag:www.pycourse.com,2013-07-02:posts/2013/Jul/02/generators-in-python/</id><summary type="html">&lt;div class="section" id="iteration"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Noisebridge Learning Python</title><link href="http://www.pycourse.com/" rel="alternate"></link><link href="http://www.pycourse.com/feeds/advanced.atom.xml" rel="self"></link><id>http://www.pycourse.com/</id><updated>2013-07-16T22:00:00-07:00</updated><entry><title>Templating using Jinja2</title><link href="http://www.pycourse.com/posts/2013/Jul/16/Templating%20and%20Jinja2/" rel="alternate"></link><updated>2013-07-16T22:00:00-07:00</updated><author><name>Kellan</name></author><id>tag:www.pycourse.com,2013-07-16:posts/2013/Jul/16/Templating and Jinja2/</id><summary type="html">&lt;p&gt;Templating is the process of taking information and placing it in a pre-defined set of text to produce a customized text file. This is particularly useful in the context of web development because the process of web templating is used extensively to create &amp;quot;dynamically generated&amp;quot; web pages.&lt;/p&gt;
+&lt;p&gt;Conceptually, the process of web templating is similar to generating a form letter. First, create the content for the web page. Then identify the parts of the web page where specific information (e.g. name, address, etc) should be inserted. This combination of content and where to insert specific info is called a template.&lt;/p&gt;
+&lt;p&gt;To create a dynamically generated web page the templating engine inserts information into the form or template whenever needed (i.e. when a user clicks on a link to the page).&lt;/p&gt;
+&lt;div class="section" id="python-templating"&gt;
+&lt;h2&gt;Python Templating&lt;/h2&gt;
+&lt;p&gt;There are many different approaches to templating and Python-based &lt;a class="reference external" href="http://wiki.python.org/moin/Templating"&gt;templating&lt;/a&gt; engines. From the simple, such as the built-in  &lt;a class="reference external" href="http://docs.python.org/2/library/string.html#template-strings"&gt;string Template&lt;/a&gt; to more structure and comprehensive approaches such as &lt;a class="reference external" href="http://jinja.pocoo.org/docs/"&gt;Jinja2&lt;/a&gt;. Some of these systems can be used on their own or in conjunction with a variety of web frameworks. Jinja2 is an example of a standalone templating system.&lt;/p&gt;
+&lt;p&gt;While others, such as &lt;a class="reference external" href="https://www.djangoproject.com"&gt;Django&lt;/a&gt; provides its own templating system that is intended to be used only with the framework. However, with some elbow grease it is possible to use something &lt;a class="reference external" href="https://github.com/GaretJax/coffin"&gt;else&lt;/a&gt; such as Jinja2. &lt;a class="reference external" href="http://flask.pocoo.org"&gt;Flask&lt;/a&gt; uses Jinja2 since it and Jinja2 share the same development team. Pylon is pre-configured to use either &lt;a class="reference external" href="http://www.makotemplates.org"&gt;Mako&lt;/a&gt;, &lt;a class="reference external" href="http://genshi.edgewall.org"&gt;Genshi&lt;/a&gt;, or Jinja2.&lt;/p&gt;
+&lt;p&gt;We're going to focus on Jinja2 because it's relatively easy to learn, widely-used, well-supported, and can be used independently of the Flask framework.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="jinja2-install"&gt;
+&lt;h2&gt;Jinja2 Install&lt;/h2&gt;
+&lt;p&gt;To use Jinja2 as a standalone templating system use pip to install it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="go"&gt;pip install jinja2&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once the install is complete, we're ready to use Jinja2. To use it import the module at the top of your script. However, we will also need to tell Jinja where to find the templates. Jinja2 uses an Environment object to store configuration information and we use this object to tell Jinja2 where to find the templates.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;jinja2&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Environment&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;FileSystemLoader&lt;/span&gt;
+
+&lt;span class="n"&gt;env&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Environment&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;FileSystemLoader&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TEMPLATE_DIR&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;env&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;mytemplate.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Going forward, we'll be taking at look at Jinja2 using Flask; however the templating syntax remains the same whether Jinja2 is used as part of a web framework or as a standalone system.&lt;/p&gt;
+&lt;p&gt;Note: it is also possible to pass the template as a string:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;jinja2&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Template&lt;/span&gt;
+&lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Hello {{ name }}!&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;John Doe&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="jinja2-with-flask"&gt;
+&lt;h2&gt;Jinja2 with Flask&lt;/h2&gt;
+&lt;p&gt;To show Jinja's features and syntax we'll use the Flask-Noiselist &lt;a class="reference external" href="https://github.com/noisebridge/flask-noiselist"&gt;tutorial&lt;/a&gt;. Clone and build the project.&lt;/p&gt;
+&lt;dl class="docutils"&gt;
+&lt;dt&gt;A few notes before we dive into the tutorial's templating section:&lt;/dt&gt;
+&lt;dd&gt;&lt;ol class="first last arabic simple"&gt;
+&lt;li&gt;Templates are just text files.&lt;/li&gt;
+&lt;li&gt;Templates typically live in the /templates directory in a Flask project and by default Flask uses template files stored in the /templates directory.&lt;/li&gt;
+&lt;li&gt;Jinja2 templates does not require any special bootstrap code or incantations.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;The tutorial creates a main page template (templates/hello.html) that contains the following code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;title&amp;gt;&lt;/span&gt;TODO at Noisebridge&lt;span class="nt"&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;My Personal TODO List&lt;span class="nt"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
+                {% for todo in todos %}
+                    &lt;span class="nt"&gt;&amp;lt;li&amp;gt;&lt;/span&gt;{{ todo }}&lt;span class="nt"&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+                {% endfor %}
+            &lt;span class="nt"&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;form&lt;/span&gt; &lt;span class="na"&gt;action=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;method=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;POST&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;add_to_todo_list&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;input&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;name=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;todo_item&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;input&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;submit&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;name=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;add_todo_submit&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;value=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Add to List!&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Jinja2 looks for braces that tells it to insert data or perform specific logic that will ultimately result in text-based insertions.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;A template contains variables and expressions which gets replaced with values by the templating engine. For example the {{ todo }} is a variable that will get replaced with a value.&lt;/li&gt;
+&lt;li&gt;A template can also contain tags, which control the logic of the templating process. In fact, most of the control structure from Python is available in Jinja2 wrapped by the {% %} tags. (Also see the discussion on Filters below.)&lt;/li&gt;
+&lt;li&gt;There are two kinds of delimiters, {{ }} and {% %}, which Jinja2 looks for tell it to execute statements (such as if /then or for loop) or to insert the result of an expression into the template.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-to-get-data-to-the-template"&gt;
+&lt;h2&gt;How To Get Data To The Template&lt;/h2&gt;
+&lt;p&gt;So how does Jinja2 gets the data to make the substitution? When paired with Flask, use Flask's render_tenplate(). render_template() will take a template name and a variable list of data arguments to be used during the templating process. It will return the template with all requested substitutions.&lt;/p&gt;
+&lt;p&gt;render_template() will look for templates in the /templates directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;todo_list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Watch TV&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Contemplate Work&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Go to Bed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;hello.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;todos&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;todo_list&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note that in the todo example, we sent render_template() a list of todos. But we could have sent it a dictionary such as&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;Phong&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;index.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;then in the template we could refer to the user dictionary as:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Hello, {{ user.name }}!&lt;span class="nt"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note that the template used a dot (.) to access the attribute of a variable.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="template-inheritance"&gt;
+&lt;h2&gt;Template Inheritance&lt;/h2&gt;
+&lt;p&gt;Another great Jinja2 feature is template inheritance. Inheritance supports the building of a skeleton page that contains common elements for all pages such as links to Javascript libraries or CSS style sheets. This skeleton, or parent page, also contain place holders, which are called &amp;quot;blocks&amp;quot;, that child templates can overrides to provide specific implementation.&lt;/p&gt;
+&lt;p&gt;For example, Miguel &lt;a class="reference external" href="http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-ii-templates"&gt;Greenberg&lt;/a&gt; used the following example in his tutorial to demonstrate how template inheritance works. In his example, the main base template includes the elements common to all pages (file name: base.html):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+    {% if title %}
+        &lt;span class="nt"&gt;&amp;lt;title&amp;gt;&lt;/span&gt;{{title}} - microblog&lt;span class="nt"&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+    {% else %}
+        &lt;span class="nt"&gt;&amp;lt;title&amp;gt;&lt;/span&gt;microblog&lt;span class="nt"&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+    {% endif %}
+    &lt;span class="nt"&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;div&amp;gt;&lt;/span&gt;Microblog: &lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;/index&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;Home&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;hr&amp;gt;&lt;/span&gt;
+        {% block content %}
+        &lt;span class="c"&gt;&amp;lt;!-- insert page specific content here --&amp;gt;&lt;/span&gt;
+        {% endblock %}
+    &lt;span class="nt"&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;He then defined a page specific template (file name: index.html) that defined a set of HTML code and data substitutions that should be inserted into the base template to produce a specific page.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;{% extends &amp;quot;base.html&amp;quot; %}
+{% block content %}
+    &lt;span class="nt"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Hi, {{user.nickname}}!&lt;span class="nt"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+    {% for post in posts %}
+        &lt;span class="nt"&gt;&amp;lt;div&amp;gt;&amp;lt;p&amp;gt;&lt;/span&gt;{{post.author.nickname}} says: &lt;span class="nt"&gt;&amp;lt;b&amp;gt;&lt;/span&gt;{{post.body}}&lt;span class="nt"&gt;&amp;lt;/b&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+    {% endfor %}
+{% endblock %}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In this process where one template (index.html) inserts itself in another (base.html), index.html is called the child template that &amp;quot;inherits&amp;quot; from the parent base.html. Furthermore, that the block content definition in index.html &amp;quot;overrides&amp;quot; the block in base.html.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="filters"&gt;
+&lt;h2&gt;Filters&lt;/h2&gt;
+&lt;p&gt;Filters can take the values of variables and modify it. Specify a filter by typing the pipe symbol folow the name of the filter (with optional arguments in parenthesis). Filters can be chained with the output of one serving as the input for the next.&lt;/p&gt;
+&lt;p&gt;For example, {{ name|striptags|title }} will strip all HTML tags from the name and will title case the string. Jinja2 provides an extensive list of built in &lt;a class="reference external" href="http://jinja.pocoo.org/docs/templates/#builtin-filters"&gt;filters&lt;/a&gt; that provides access to the most common and useful Python functions, but the ability to define custom filters is really useful.&lt;/p&gt;
+&lt;p&gt;For example, if you need to wrap a link tag around URL string, one way is to define a custom filter which allows you to define the logic using Python, register the custom filter with Jinja2, and use the filter in the template.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;resurrect_links&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tweet_text&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="c"&gt;# links is a list of dict(s) containing info about links in the tweet&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c"&gt;# if there are multiple links then sort in reverse order of indices&lt;/span&gt;
+        &lt;span class="c"&gt;# such that the last link in the tweet gets resurrected first.&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;indices&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c"&gt;# resurrect each links&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;indices&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;tweet_text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tweet_text&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;lt;a href=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;resource_url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; \
+            &lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;display_url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;lt;/a&amp;gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;tweet_text&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="p"&gt;:]&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;tweet_text&lt;/span&gt;
+
+&lt;span class="c"&gt;# registers the custom filter with Jinja2&lt;/span&gt;
+&lt;span class="n"&gt;env&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filters&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;resurrect_links&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;resurrect_links&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;and the template would use the filter as follow.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;tweet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;links&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;tweet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;resurrect_links&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tweet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;tweet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endif&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+</summary></entry><entry><title>Generators in Python</title><link href="http://www.pycourse.com/posts/2013/Jul/02/generators-in-python/" rel="alternate"></link><updated>2013-07-02T14:00:00-07:00</updated><author><name>Kellan</name></author><id>tag:www.pycourse.com,2013-07-02:posts/2013/Jul/02/generators-in-python/</id><summary type="html">&lt;div class="section" id="iteration"&gt;
 &lt;h2&gt;Iteration&lt;/h2&gt;
 &lt;p&gt;In python objects such as strings, lists and dictionaries iterable. Simplified we can loop over them.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Strings&lt;/span&gt;
