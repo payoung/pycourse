@@ -26,8 +26,181 @@
 
                             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="../posts/2013/Jul/16/Templating and Jinja2/">Templating using Jinja2</a></h1> 
+                    <h1 class="entry-title"><a href="../posts/2013/Aug/13/sql-alchemy/">SQL Alchemy</a></h1> 
                     <footer class="post-info">
+        <abbr class="published" title="2013-08-13T14:00:00">
+                Tue 13 August 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="../author/joseph-watters.html">Joseph Watters</a>
+        </address>
+        <p>In <a href="../category/advanced.html">advanced</a>. </p>
+
+</footer><!-- /.post-info --><div class="section" id="intro">
+<h2>Intro</h2>
+<p><strong>Pros:</strong></p>
+<ul class="simple">
+<li>ORM, database logic can be written out in Python.</li>
+<li>Impermeable to SQL insertion attacks.</li>
+<li>Supports many database backends.</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul class="simple">
+<li>Some API issues</li>
+<li>Don’t use in production</li>
+<li>Meant to remain small</li>
+</ul>
+</div>
+<div class="section" id="set-up-your-db">
+<h2>SET UP YOUR DB</h2>
+<p>The create_engine instance: underlying constructs are Dialect and Pool.</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s">&#39;sqlite:///:memory:&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">echo</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="create-a-table">
+<h2>Create a Table</h2>
+<div class="highlight"><pre><span class="n">users</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s">&#39;users&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;user_name&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">40</span><span class="p">)),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;email&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">40</span><span class="p">)),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;password&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">)))</span>
+
+<span class="n">users</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="run">
+<h2>Run</h2>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">stmt</span><span class="p">):</span>
+    <span class="n">rs</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">row</span>
+</pre></div>
+<p>We will need this method later to print our queries.</p>
+</div>
+<div class="section" id="populate">
+<h2>Populate</h2>
+<p>Your database will need some mock data, so point here for randomly generated data tables.</p>
+<p><strong>Quick Populate:</strong></p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">add_user</span><span class="p">():</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;users.csv&#39;</span><span class="p">,</span> <span class="s">&#39;rU&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">reader</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">append_user</span> <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
+            <span class="n">append_user</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">email</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">user_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="section" id="building-a-relationship">
+<h2>Building a Relationship</h2>
+<p>The creation of a related table is similar to our previous table, but with one addition. The <cite>ForeignKey('&lt;table.column&gt;')</cite> method will link rows of a secondary table with a primary table by storing a mapped value within the secondary table row. Importantly, a foreignkey must be identified when appending new rows with the intention of mapping foreignkey values with other tables.</p>
+<p>In the following example, the user_id in the location table is mapped with the user_id column in the users table. The naming of a foreign key column does not require an exact copy of the mapped column name.</p>
+<div class="highlight"><pre><span class="n">locations</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s">&#39;locations&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+                  <span class="n">Column</span><span class="p">(</span><span class="s">&#39;location_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span> <span class="o">=</span> <span class="bp">True</span><span class="p">),</span>
+                  <span class="n">Column</span><span class="p">(</span><span class="s">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;users.user_id&#39;</span><span class="p">)),</span>
+                  <span class="n">Column</span><span class="p">(</span><span class="s">&#39;city&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+                  <span class="n">Column</span><span class="p">(</span><span class="s">&#39;state&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+                  <span class="n">Column</span><span class="p">(</span><span class="s">&#39;postal_code&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">)))</span>
+<span class="n">locations</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="joins">
+<h2>Joins</h2>
+<p>Join statements combine rows from two or more tables around a common field: the dictating of commonality allows for narrowed queries. Rows without common values can still be joined with other tables, but values may result in null values wherever conditions are not met in outer joins and ignored in inner joins.</p>
+<p>The most common join is an inner join. It returns only the rows of tables where join parameters are met. SQLAlchemy allows for at least two methods to define tables and conditions where rows are to be joined.</p>
+<div class="highlight"><pre><span class="n">select</span><span class="p">([</span><span class="o">&lt;</span><span class="n">table1</span><span class="o">&gt;</span><span class="p">,</span><span class="o">&lt;</span><span class="n">table2</span><span class="o">&gt;</span><span class="p">],</span><span class="o">&lt;</span><span class="n">conditions</span><span class="o">&gt;</span><span class="p">)</span>
+
+<span class="n">select</span><span class="p">(</span><span class="n">users</span><span class="p">,</span><span class="n">locations</span><span class="p">)</span>
+</pre></div>
+<p>will print out the multiplicative value of the table. Adding a condition will produce a linear result. Adding further condition logic will tighten down results.</p>
+<p><strong>Smart Join</strong></p>
+<div class="highlight"><pre><span class="n">join</span><span class="p">(</span><span class="o">&lt;</span><span class="n">table1</span><span class="o">&gt;</span><span class="p">,</span><span class="o">&lt;</span><span class="n">table2</span><span class="o">&gt;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+</pre></div>
+<p>The opposite is an outer join, which returns a more inclusive query. An outer join in SQLAlchemy defaults to a left outer join. Ie. All rows from table1 will be returned and any corresponding rows from table2.
+“Outer Join”</p>
+<div class="highlight"><pre><span class="n">outerjoin</span><span class="p">(</span><span class="o">&lt;</span><span class="n">table1</span><span class="o">&gt;</span><span class="p">,</span><span class="o">&lt;</span><span class="n">table2</span><span class="o">&gt;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span>
+</pre></div>
+<p>With these two methods all it takes is a basic understanding of how joins behave in order to accurately dictate query results from multiple tables.</p>
+</div>
+<div class="section" id="fetching-and-selecting">
+<h2>Fetching and Selecting:</h2>
+<p>The select method produces a nontype sql query. Printing the contents of the query requires the <cite>execute()</cite> and <cite>fetch()</cite> methods.</p>
+<p><strong>Fetch</strong></p>
+<div class="highlight"><pre>Fetchone()
+# To return
+# Returns a single row
+Fetchall()
+#Returns a list of rows
+</pre></div>
+<p>Select statements are going to be the workhorse when it comes to querying. Here are the permutations of logic within a select method.</p>
+<div class="highlight"><pre>select(and_()) | select()
+# Conditional logic, all parameters must be met.
+
+select(or())
+#Conditional logic, one of the parameters must be met.
+
+select(not_())
+# Conditional logic, none of the parameters must be met.
+
+select(&lt;&gt;.startswith(‘’))
+# Value of column must start with string value in order to return row.
+
+select(&lt;&gt;.like(‘’))
+#Value of column must be like string value in order to return row.
+
+select(&lt;&gt;.endswtih(‘’))
+# Value of column must end with string value in order to return row.
+
+select(&lt;&gt;.between(x,y))
+#Value of column must be between values in order to return row.
+
+select(&lt;&gt;.in_(&lt;array&gt;))
+#Value of column must be in array in order to return row.
+
+select([&lt;table or column&gt;], &lt;condition&gt;)
+#Primary select utilization, tables or columns join around met conditions.
+select([func.count(&lt;table.c.column&gt;)])
+</pre></div>
+</div>
+<div class="section" id="indexing">
+<h2>Indexing</h2>
+<div class="highlight"><pre>Index(‘users_index’, users.c.user_name)
+User = Table(‘users’, metadata,
+    Column(‘name’, String(50), index=True)
+</pre></div>
+</div>
+<div class="section" id="schema-migration">
+<h2>Schema Migration</h2>
+<p>Use either SQLAlchemy Migrate or Alembic for your migration needs. Although Alter statements and the DDL construct permit schema modifications, it is wise to utilize automated tools for easy migration. Documentation can be found at the links provided.</p>
+</div>
+<div class="section" id="mapper">
+<h2>Mapper</h2>
+<p>The <cite>mapper()</cite> function takes two parameters; the class and the object to be mapped.</p>
+<div class="highlight"><pre><span class="n">Session</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">create_session</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>There are <a href="../posts/2013/Aug/13/sql-alchemy/#disqus_thread">comments</a>.</p>                </article>
+                            </aside><!-- /#featured -->
+                            <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+                                                
+
+                 
+                        <li><article class="hentry">    
+                <header>
+                    <h1><a href="../posts/2013/Jul/16/Templating and Jinja2/" rel="bookmark"
+                           title="Permalink to Templating using Jinja2">Templating using Jinja2</a></h1>
+                </header>
+                
+                <div class="entry-content">
+                <footer class="post-info">
         <abbr class="published" title="2013-07-16T22:00:00">
                 Tue 16 July 2013
         </abbr>
@@ -37,163 +210,12 @@
         </address>
         <p>In <a href="../category/advanced.html">advanced</a>. </p>
 
-</footer><!-- /.post-info --><p>Templating is the process of taking information and placing it in a pre-defined set of text to produce a customized text file. This is particularly useful in the context of web development because the process of web templating is used extensively to create &quot;dynamically generated&quot; web pages.</p>
-<p>Conceptually, the process of web templating is similar to generating a form letter. First, create the content for the web page. Then identify the parts of the web page where specific information (e.g. name, address, etc) should be inserted. This combination of content and where to insert specific info is called a template.</p>
-<p>To create a dynamically generated web page the templating engine inserts information into the form or template whenever needed (i.e. when a user clicks on a link to the page).</p>
-<div class="section" id="python-templating">
-<h2>Python Templating</h2>
-<p>There are many different approaches to templating and Python-based <a class="reference external" href="http://wiki.python.org/moin/Templating">templating</a> engines. From the simple, such as the built-in  <a class="reference external" href="http://docs.python.org/2/library/string.html#template-strings">string Template</a> to more structure and comprehensive approaches such as <a class="reference external" href="http://jinja.pocoo.org/docs/">Jinja2</a>. Some of these systems can be used on their own or in conjunction with a variety of web frameworks. Jinja2 is an example of a standalone templating system.</p>
-<p>While others, such as <a class="reference external" href="https://www.djangoproject.com">Django</a> provides its own templating system that is intended to be used only with the framework. However, with some elbow grease it is possible to use something <a class="reference external" href="https://github.com/GaretJax/coffin">else</a> such as Jinja2. <a class="reference external" href="http://flask.pocoo.org">Flask</a> uses Jinja2 since it and Jinja2 share the same development team. Pylon is pre-configured to use either <a class="reference external" href="http://www.makotemplates.org">Mako</a>, <a class="reference external" href="http://genshi.edgewall.org">Genshi</a>, or Jinja2.</p>
-<p>We're going to focus on Jinja2 because it's relatively easy to learn, widely-used, well-supported, and can be used independently of the Flask framework.</p>
-</div>
-<div class="section" id="jinja2-install">
-<h2>Jinja2 Install</h2>
-<p>To use Jinja2 as a standalone templating system use pip to install it:</p>
-<div class="highlight"><pre><span class="go">pip install jinja2</span>
-</pre></div>
-<p>Once the install is complete, we're ready to use Jinja2. To use it import the module at the top of your script. However, we will also need to tell Jinja where to find the templates. Jinja2 uses an Environment object to store configuration information and we use this object to tell Jinja2 where to find the templates.</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">jinja2</span> <span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
+</footer><!-- /.post-info -->                <p class="first last">Using templating to dynamically create text files</p>
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">TEMPLATE_DIR</span><span class="p">))</span>
-<span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;mytemplate.html&#39;</span><span class="p">)</span>
-</pre></div>
-<p>Going forward, we'll be taking at look at Jinja2 using Flask; however the templating syntax remains the same whether Jinja2 is used as part of a web framework or as a standalone system.</p>
-<p>Note: it is also possible to pass the template as a string:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">jinja2</span> <span class="kn">import</span> <span class="n">Template</span>
-<span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s">&#39;Hello {{ name }}!&#39;</span><span class="p">)</span>
-<span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;John Doe&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="section" id="jinja2-with-flask">
-<h2>Jinja2 with Flask</h2>
-<p>To show Jinja's features and syntax we'll use the Flask-Noiselist <a class="reference external" href="https://github.com/noisebridge/flask-noiselist">tutorial</a>. Clone and build the project.</p>
-<dl class="docutils">
-<dt>A few notes before we dive into the tutorial's templating section:</dt>
-<dd><ol class="first last arabic simple">
-<li>Templates are just text files.</li>
-<li>Templates typically live in the /templates directory in a Flask project and by default Flask uses template files stored in the /templates directory.</li>
-<li>Jinja2 templates does not require any special bootstrap code or incantations.</li>
-</ol>
-</dd>
-</dl>
-<p>The tutorial creates a main page template (templates/hello.html) that contains the following code:</p>
-<div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
-    <span class="nt">&lt;html&gt;</span>
-        <span class="nt">&lt;head&gt;</span>
-            <span class="nt">&lt;title&gt;</span>TODO at Noisebridge<span class="nt">&lt;/title&gt;</span>
-        <span class="nt">&lt;/head&gt;</span>
-        <span class="nt">&lt;body&gt;</span>
-            <span class="nt">&lt;h1&gt;</span>My Personal TODO List<span class="nt">&lt;/h1&gt;</span>
-            <span class="nt">&lt;ul&gt;</span>
-                {% for todo in todos %}
-                    <span class="nt">&lt;li&gt;</span>{{ todo }}<span class="nt">&lt;/li&gt;</span>
-                {% endfor %}
-            <span class="nt">&lt;/ul&gt;</span>
-            <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">&quot;&quot;</span> <span class="na">method=</span><span class="s">&quot;POST&quot;</span> <span class="na">id=</span><span class="s">&quot;add_to_todo_list&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;todo_item&quot;</span><span class="nt">/&gt;</span>
-            <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">name=</span><span class="s">&quot;add_todo_submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Add to List!&quot;</span><span class="nt">/&gt;</span>
-            <span class="nt">&lt;/form&gt;</span>
-        <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
-</pre></div>
-<p>Jinja2 looks for braces that tells it to insert data or perform specific logic that will ultimately result in text-based insertions.</p>
-<blockquote>
-<ol class="arabic simple">
-<li>A template contains variables and expressions which gets replaced with values by the templating engine. For example the {{ todo }} is a variable that will get replaced with a value.</li>
-<li>A template can also contain tags, which control the logic of the templating process. In fact, most of the control structure from Python is available in Jinja2 wrapped by the {% %} tags. (Also see the discussion on Filters below.)</li>
-<li>There are two kinds of delimiters, {{ }} and {% %}, which Jinja2 looks for tell it to execute statements (such as if /then or for loop) or to insert the result of an expression into the template.</li>
-</ol>
-</blockquote>
-</div>
-<div class="section" id="how-to-get-data-to-the-template">
-<h2>How To Get Data To The Template</h2>
-<p>So how does Jinja2 gets the data to make the substitution? When paired with Flask, use Flask's render_tenplate(). render_template() will take a template name and a variable list of data arguments to be used during the templating process. It will return the template with all requested substitutions.</p>
-<p>render_template() will look for templates in the /templates directory:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span>
-
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="n">todo_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Watch TV&quot;</span><span class="p">,</span> <span class="s">&quot;Contemplate Work&quot;</span><span class="p">,</span> <span class="s">&quot;Go to Bed&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;hello.html&#39;</span><span class="p">,</span> <span class="n">todos</span><span class="o">=</span><span class="n">todo_list</span><span class="p">)</span>
-</pre></div>
-<p>Note that in the todo example, we sent render_template() a list of todos. But we could have sent it a dictionary such as</p>
-<div class="highlight"><pre><span class="n">user</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Phong&#39;</span><span class="p">}</span>
-<span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
-</pre></div>
-<p>then in the template we could refer to the user dictionary as:</p>
-<div class="highlight"><pre><span class="nt">&lt;h1&gt;</span>Hello, {{ user.name }}!<span class="nt">&lt;/h1&gt;</span>
-</pre></div>
-<p>Note that the template used a dot (.) to access the attribute of a variable.</p>
-</div>
-<div class="section" id="template-inheritance">
-<h2>Template Inheritance</h2>
-<p>Another great Jinja2 feature is template inheritance. Inheritance supports the building of a skeleton page that contains common elements for all pages such as links to Javascript libraries or CSS style sheets. This skeleton, or parent page, also contain place holders, which are called &quot;blocks&quot;, that child templates can overrides to provide specific implementation.</p>
-<p>For example, Miguel <a class="reference external" href="http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-ii-templates">Greenberg</a> used the following example in his tutorial to demonstrate how template inheritance works. In his example, the main base template includes the elements common to all pages (file name: base.html):</p>
-<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
-    <span class="nt">&lt;head&gt;</span>
-    {% if title %}
-        <span class="nt">&lt;title&gt;</span>{{title}} - microblog<span class="nt">&lt;/title&gt;</span>
-    {% else %}
-        <span class="nt">&lt;title&gt;</span>microblog<span class="nt">&lt;/title&gt;</span>
-    {% endif %}
-    <span class="nt">&lt;/head&gt;</span>
-    <span class="nt">&lt;body&gt;</span>
-        <span class="nt">&lt;div&gt;</span>Microblog: <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/index&quot;</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;&lt;/div&gt;</span>
-        <span class="nt">&lt;hr&gt;</span>
-        {% block content %}
-        <span class="c">&lt;!-- insert page specific content here --&gt;</span>
-        {% endblock %}
-    <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
-</pre></div>
-<p>He then defined a page specific template (file name: index.html) that defined a set of HTML code and data substitutions that should be inserted into the base template to produce a specific page.</p>
-<div class="highlight"><pre>{% extends &quot;base.html&quot; %}
-{% block content %}
-    <span class="nt">&lt;h1&gt;</span>Hi, {{user.nickname}}!<span class="nt">&lt;/h1&gt;</span>
-    {% for post in posts %}
-        <span class="nt">&lt;div&gt;&lt;p&gt;</span>{{post.author.nickname}} says: <span class="nt">&lt;b&gt;</span>{{post.body}}<span class="nt">&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;</span>
-    {% endfor %}
-{% endblock %}
-</pre></div>
-<p>In this process where one template (index.html) inserts itself in another (base.html), index.html is called the child template that &quot;inherits&quot; from the parent base.html. Furthermore, that the block content definition in index.html &quot;overrides&quot; the block in base.html.</p>
-</div>
-<div class="section" id="filters">
-<h2>Filters</h2>
-<p>Filters can take the values of variables and modify it. Specify a filter by typing the pipe symbol folow the name of the filter (with optional arguments in parenthesis). Filters can be chained with the output of one serving as the input for the next.</p>
-<p>For example, {{ name|striptags|title }} will strip all HTML tags from the name and will title case the string. Jinja2 provides an extensive list of built in <a class="reference external" href="http://jinja.pocoo.org/docs/templates/#builtin-filters">filters</a> that provides access to the most common and useful Python functions, but the ability to define custom filters is really useful.</p>
-<p>For example, if you need to wrap a link tag around URL string, one way is to define a custom filter which allows you to define the logic using Python, register the custom filter with Jinja2, and use the filter in the template.</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">resurrect_links</span><span class="p">(</span><span class="n">tweet_text</span><span class="p">,</span> <span class="n">links</span><span class="p">):</span>
-<span class="c"># links is a list of dict(s) containing info about links in the tweet</span>
-    <span class="k">if</span> <span class="n">links</span><span class="p">:</span>
-        <span class="c"># if there are multiple links then sort in reverse order of indices</span>
-        <span class="c"># such that the last link in the tweet gets resurrected first.</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">links</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">links</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">link</span><span class="p">:</span><span class="n">link</span><span class="p">[</span><span class="s">&#39;indices&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-    <span class="c"># resurrect each links</span>
-    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
-        <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">link</span><span class="p">[</span><span class="s">&#39;indices&#39;</span><span class="p">]</span>
-        <span class="n">tweet_text</span> <span class="o">=</span> <span class="n">tweet_text</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;&lt;a href=</span><span class="se">\&quot;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">link</span><span class="p">[</span><span class="s">&#39;resource_url&#39;</span><span class="p">]</span> <span class="o">+</span> \
-            <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&quot;&gt;&quot;</span> <span class="o">+</span> <span class="n">link</span><span class="p">[</span><span class="s">&#39;display_url&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;&lt;/a&gt;&quot;</span> <span class="o">+</span> <span class="n">tweet_text</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span>
-    <span class="k">return</span> <span class="n">tweet_text</span>
-
-<span class="c"># registers the custom filter with Jinja2</span>
-<span class="n">env</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="s">&#39;resurrect_links&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resurrect_links</span>
-</pre></div>
-<p>and the template would use the filter as follow.</p>
-<div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">tweet</span><span class="o">.</span><span class="n">links</span> <span class="o">%</span><span class="p">}</span>
-    <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">tweet</span><span class="o">.</span><span class="n">text</span><span class="o">|</span><span class="n">resurrect_links</span><span class="p">(</span><span class="n">tweet</span><span class="o">.</span><span class="n">links</span><span class="p">)</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-<span class="p">{</span><span class="o">%</span> <span class="k">else</span> <span class="o">%</span><span class="p">}</span>
-    <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">tweet</span><span class="o">.</span><span class="n">text</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-<span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>There are <a href="../posts/2013/Jul/16/Templating and Jinja2/#disqus_thread">comments</a>.</p>                </article>
-                            </aside><!-- /#featured -->
-                            <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-                                                
+                <a class="readmore" href="../posts/2013/Jul/16/Templating and Jinja2/">read more</a>
+                <p>There are <a href="../posts/2013/Jul/16/Templating and Jinja2/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                            
 
                  
                         <li><article class="hentry">    
