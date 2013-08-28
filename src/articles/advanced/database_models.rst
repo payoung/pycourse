@@ -87,23 +87,23 @@ A major drawback to the relational database model was that the existing implemen
 
 Advantages of NoSQL
 -------------------
- - Scalability - can be run on multiple machines
- - Flexibilily - schema is defined by the programmer/application
+- Scalability - can be run on multiple machines
+- Flexibilily - schema is defined by the programmer/application
  
- Disadvantages of NoSQL
- ----------------------
- - Inconsistency - Because schema is so application dependent, NoSQL may fail in cases where multiuple apps use the same database
- - Lack of Querying Capabilites - Relational databases provide powerful querying capabilites that allow programmers/applications to push the querying workload to the database server, whereas NoSQL databases more often require that the programmer/application do this work on the client side.
+Disadvantages of NoSQL
+----------------------
+- Inconsistency - Because schema is so application dependent, NoSQL may fail in cases where multiuple apps use the same database
+- Lack of Querying Capabilites - Relational databases provide powerful querying capabilites that allow programmers/applications to push the querying workload to the database server, whereas NoSQL databases more often require that the programmer/application do this work on the client side.
  
- Additional Notes
- ----------------
- - The term NoSQL is a little misleading, as "NoSQL" databases are generally different data models.
- - More and more NoSQL databases are becoming more "SQL-Like".  Spanner, Impala, etc.. The ability to enforce consistency and to provide querying capabilites are becoming more common in newer "NoSQL"database systems.
+Additional Notes
+----------------
+- The term NoSQL is a little misleading, as "NoSQL" databases are generally different data models.
+- More and more NoSQL databases are becoming more "SQL-Like".  Spanner, Impala, etc.. The ability to enforce consistency and to provide querying capabilites are becoming more common in newer "NoSQL"database systems.
  
- Homework
- --------
- - Install PyMongo/MondgoDB (of some other NoSQL DB if you would prefer)
- - Re-Implemnt your PronDB code to run with PyMongo/MongoDB
+Homework
+--------
+- Install PyMongo/MondgoDB (of some other NoSQL DB if you would prefer)
+- Re-Implemnt your PronDB code to run with PyMongo/MongoDB
 
 
 [1] http://en.wikipedia.org/wiki/Database_normalization
