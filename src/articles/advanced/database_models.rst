@@ -40,10 +40,13 @@ The criteria for determining a table's degree of normilization is called the nor
 
 **1NF**
 - requiring the existence of a key
+
 **2NF**
 - requiring that non-key attributes be dependent on a key
+
 **3NF**
 - further requiring that non-key attributes be dependent on nothing but the key
+
 **BCNF**
 - Every non-trivial functional dependency in the table is a dependency on a superkey
 
@@ -55,10 +58,13 @@ Another aspect of relational database systems is that a lot of the implemntation
 
 **Atomicity**
 - Each transaction is all or nothing, if one part of the transaction fails, the whole transaction fails.
+
 **Consistency**
 - Ensures that the database will remain in a valid state. i.e. no data can be entered that would violate a database constraint
+
 **Isolation**
 - This ensures that concurrent or serial transactions result in the same database state.  i.e. you can transact with the database concurrently and it will not impact another transaction
+
 **Durability**
 - Once a transaction has been committed, it will remain so, even in the case of power loss or a crash.
 
@@ -66,8 +72,38 @@ SQL
 ---
 Most relational databases use the SQL querying language.  A major advantage of SQL is that it is based upon relational algebra, and uses algebraic optimization (sort of) to optimize queries.
 
-NoSQL
------
+The Rise of NoSQL
+-----------------
+A major drawback to the relational database model was that the existing implementations did not scale well.  The ACID requirements meant that, for very large applications where multiple machines for storage maybe required, the performance of the database suffers tremendously.  For applications where "eventual consistency" was acceptable, it made more sense to decrease the reliability requirements of the database in order to imporve performance, and allow the application programmer to resolve "disputes" and irregularities.
+
+**Common NoSQL Systems (System, Year, Data Model)**
+
+- MapReduce, 2004, Key-Value
+- CouchDB, 2005, Document
+- MongoDB, 2007, Document
+- Cassandra, 2008, Key-Value
+- Megastore, 2011, Tables
+- Spanner, 2012, Tables
+
+Advantages of NoSQL
+-------------------
+ - Scalability - can be run on multiple machines
+ - Flexibilily - schema is defined by the programmer/application
+ 
+ Disadvantages of NoSQL
+ ----------------------
+ - Inconsistency - Because schema is so application dependent, NoSQL may fail in cases where multiuple apps use the same database
+ - Lack of Querying Capabilites - Relational databases provide powerful querying capabilites that allow programmers/applications to push the querying workload to the database server, whereas NoSQL databases more often require that the programmer/application do this work on the client side.
+ 
+ Additional Notes
+ ----------------
+ - The term NoSQL is a little misleading, as "NoSQL" databases are generally different data models.
+ - More and more NoSQL databases are becoming more "SQL-Like".  Spanner, Impala, etc.. The ability to enforce consistency and to provide querying capabilites are becoming more common in newer "NoSQL"database systems.
+ 
+ Homework
+ --------
+ - Install PyMongo/MondgoDB (of some other NoSQL DB if you would prefer)
+ - Re-Implemnt your PronDB code to run with PyMongo/MongoDB
 
 
 [1] http://en.wikipedia.org/wiki/Database_normalization
